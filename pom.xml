@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+
+ <groupId>biz.majorov.camel</groupId>
+ <artifactId>spring-dsl</artifactId>
+ <version>1.0-SNAPSHOT</version>
+ <packaging>war</packaging>
+
+ <!-- Properties -->
+ <properties>
+  <version.wildfly.camel>2.4.0.redhat-630329</version.wildfly.camel>
+  <version.maven.compiler.plugin>3.1</version.maven.compiler.plugin>
+  <jboss.home>${env.JBOSS_HOME}</jboss.home>
+  <version.wildfly>12.0.0.Final</version.wildfly>
+  <version.maven.surefire.plugin>2.20.1</version.maven.surefire.plugin>
+  <server.config>standalone-camel.xml</server.config>
+  <maven.compiler.target>1.8</maven.compiler.target>
+  <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  <version.wildfly.maven.plugin>1.2.0.Final</version.wildfly.maven.plugin>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <maven.compiler.source>1.8</maven.compiler.source>
+  <version.maven.war.plugin>3.0.0</version.maven.war.plugin>
+ </properties>
+
+ <!-- DependencyManagement -->
+ <dependencyManagement>
+  <dependencies>
+   <dependency>
+    <groupId>org.wildfly.camel</groupId>
+    <artifactId>wildfly-camel</artifactId>
+    <version>${version.wildfly.camel}</version>
+    <type>pom</type>
+    <scope>import</scope>
+   </dependency>
+  </dependencies>
+ </dependencyManagement>
+
+ <!-- Dependencies -->
+ <dependencies>
+   <dependency>
+   <groupId>org.apache.camel</groupId>
+   <artifactId>camel-cxf</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.camel</groupId>
+   <artifactId>camel-core</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.cxf</groupId>
+   <artifactId>cxf-rt-ws-security</artifactId>
+  </dependency>
+  <dependency>
+   <groupId>org.jboss.spec.javax.servlet</groupId>
+   <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+   <version>1.0.0.Final-redhat-1</version>
+   <scope>provided</scope>
+  </dependency>
+ <dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-web</artifactId>
+  </dependency>
+  <!-- Test -->
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <scope>test</scope>
+  </dependency>
+  <dependency>
+   <groupId>org.jboss.arquillian.junit</groupId>
+   <artifactId>arquillian-junit-container</artifactId>
+   <scope>test</scope>
+  </dependency>
+ </dependencies>
+ <repositories>
+  <repository>
+   <id>jboss-public-repository</id>
+   <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+  </repository>
+ </repositories>
+ <!-- Build -->
+ <build>
+  <finalName>${project.artifactId}</finalName>
+  <testResources>
+   <testResource>
+    <directory>src/test/resources</directory>
+    <filtering>true</filtering>
+   </testResource>
+  </testResources>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>${version.maven.compiler.plugin}</version>
+    <configuration>
+     <source>${maven.compiler.source}</source>
+     <target>${maven.compiler.target}</target>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-war-plugin</artifactId>
+    <version>${version.maven.war.plugin}</version>
+   </plugin>
+   <plugin>
+    <groupId>org.wildfly.plugins</groupId>
+    <artifactId>wildfly-maven-plugin</artifactId>
+    <version>${version.wildfly.maven.plugin}</version>
+    <configuration>
+     <version>${version.wildfly}</version>
+     <serverConfig>${server.config}</serverConfig>
+    </configuration>
+   </plugin>
+  </plugins>
+ </build>
+
+ <!-- Profiles -->
+ <profiles>
+  <!-- Separate profiles are provided for running tests, including Arquillian tests
+   that execute in a specified container -->
+  <profile>
+   <!-- The default profile skips all tests, though you can tune it to run just unit
+    tests based on a custom pattern -->
+   <id>default</id>
+   <activation>
+    <activeByDefault>true</activeByDefault>
+   </activation>
+   <build>
+    <plugins>
+     <plugin>
+      <artifactId>maven-surefire-plugin</artifactId>
+      <version>${version.maven.surefire.plugin}</version>
+      <configuration>
+       <skip>true</skip>
+      </configuration>
+     </plugin>
+    </plugins>
+   </build>
+  </profile>
+  <profile>
+   <!-- An optional Arquillian testing profile that executes tests in your container
+    instance -->
+   <!-- Run with: mvn clean test -Parq-managed -->
+   <id>arq-managed</id>
+   <dependencies>
+    <dependency>
+     <groupId>org.wildfly.arquillian</groupId>
+     <artifactId>wildfly-arquillian-container-managed</artifactId>
+     <scope>test</scope>
+    </dependency>
+   </dependencies>
+  </profile>
+  <profile>
+   <!-- An optional Arquillian testing profile that executes tests in a remote container
+    instance -->
+   <!-- Run with: mvn clean test -Parq-remote -->
+   <id>arq-remote</id>
+   <dependencies>
+    <dependency>
+     <groupId>org.wildfly.arquillian</groupId>
+     <artifactId>wildfly-arquillian-container-remote</artifactId>
+     <scope>test</scope>
+    </dependency>
+   </dependencies>
+  </profile>
+ </profiles>
+
+</project>

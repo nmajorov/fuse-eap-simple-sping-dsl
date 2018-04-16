@@ -1,0 +1,60 @@
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:cxf-core="http://cxf.apache.org/core" xmlns:p="http://cxf.apache.org/policy"
+    xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xmlns:http="http://cxf.apache.org/transports/http/configuration"
+
+    xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
+       http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+       http://cxf.apache.org/configuration/security  http://cxf.apache.org/schemas/configuration/security.xsd">
+
+
+       <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:camel="http://camel.apache.org/schema/spring"
+           xmlns:cxf-core="http://cxf.apache.org/core" xmlns:p="http://cxf.apache.org/policy"
+           xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:jaxws="http://cxf.apache.org/jaxws"
+           xmlns:http="http://cxf.apache.org/transports/http/configuration"
+
+           xsi:schemaLocation="
+              http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+              http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+              http://cxf.apache.org/policy http://cxf.apache.org/schemas/policy.xsd
+              http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+              http://cxf.apache.org/configuration/security  http://cxf.apache.org/schemas/configuration/security.xsd">
+
+           <bean
+               class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+           <cxf-core:bus>
+               <cxf-core:features>
+                   <p:policies />
+                   <cxf-core:logging />
+               </cxf-core:features>
+           </cxf-core:bus>
+
+
+           <bean class="biz.majorov.camel.MyBean" id="helloBean"/>
+
+           <cxf:cxfEndpoint id="ping" serviceClass="biz.majorov.ws.Ping" address="/ping"/>
+
+           <camelContext id="my_context" xmlns="http://camel.apache.org/schema/spring">
+               <route id="start">
+                   <from uri="cxf:bean:ping" />
+                   <log message="ping was called" loggingLevel="INFO" />
+                   <bean id="_bean1" ref="helloBean"/>
+               </route>
+           </camelContext>
+
+
+
+
+       </beans>
+
+
+
+</beans>
